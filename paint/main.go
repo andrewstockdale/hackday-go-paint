@@ -31,6 +31,9 @@ func main() {
 
 	// Create some widgets to put in the grid.
 	btn, _ := gtk.ColorButtonNew()
+	defaultBrushColour := gdk.NewRGBA(0,0,0,1)
+	btn.ColorChooser.SetRGBA(defaultBrushColour)
+
 	da, _ := gtk.DrawingAreaNew()
 	da.SetSizeRequest(width,height)
 
@@ -50,7 +53,8 @@ func main() {
 
 	// Event handlers
 	da.Connect("draw", func(da *gtk.DrawingArea, cr *cairo.Context) {
-		cr.SetSourceRGB(0, 0, 0)
+		chosenRGBAValue := btn.ColorChooser.GetRGBA().Floats()
+		cr.SetSourceRGB(chosenRGBAValue[0],chosenRGBAValue[1],chosenRGBAValue[2])
 		cr.Rectangle(x*unitSize, y*unitSize, unitSize, unitSize)
 		cr.Stroke()
 		for i := 0; i < width; i++ {
@@ -62,8 +66,6 @@ func main() {
         	}
         }
 		cr.Stroke()
-
-
 	})
 
 	win.Connect("motion-notify-event", func(win *gtk.Window, ev *gdk.Event) {
