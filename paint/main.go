@@ -19,10 +19,23 @@ func main() {
 
 	// gui boilerplate
 	win, _ := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
+	win.SetTitle("Paint")
+	win.Connect("destroy", func() {
+		gtk.MainQuit()
+	})
+
+	// Create a new grid widget to arrange child widgets
+	grid, _ := gtk.GridNew()
+	grid.SetOrientation(gtk.ORIENTATION_VERTICAL)
+
+	// Create some widgets to put in the grid.
+	btn, _ := gtk.ColorButtonNew()
 	da, _ := gtk.DrawingAreaNew()
-	win.Add(da)
-	win.SetTitle("Arrow keys")
-	win.Connect("destroy", gtk.MainQuit)
+
+	// Put widgets in grid
+	grid.Add(da)
+	grid.Add(btn)
+	win.Add(grid)
 	win.ShowAll()
 
 	// Data !
