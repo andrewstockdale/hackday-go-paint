@@ -7,12 +7,6 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 )
 
-const (
-	KEY_LEFT  uint = 65361
-	KEY_UP    uint = 65362
-	KEY_RIGHT uint = 65363
-	KEY_DOWN  uint = 65364
-)
 
 func main() {
 	gtk.Init(nil)
@@ -37,12 +31,7 @@ func main() {
 	unitSize := 1.0
 	x := 0.0
 	y := 0.0
-	keyMap := map[uint]func(){
-		KEY_LEFT:  func() { x-- },
-		KEY_UP:    func() { y-- },
-		KEY_RIGHT: func() { x++ },
-		KEY_DOWN:  func() { y++ },
-	}
+	
 
 	// Event handlers
 	da.Connect("draw", func(da *gtk.DrawingArea, cr *cairo.Context) {
@@ -60,14 +49,6 @@ func main() {
 		cr.Stroke()
 
 
-	})
-	win.Connect("key-press-event", func(win *gtk.Window, ev *gdk.Event) {
-		keyEvent := &gdk.EventKey{ev}
-		if move, found := keyMap[keyEvent.KeyVal()]; found {
-			move()
-			fmt.Printf("on key %f %f\n", x, y)
-			win.QueueDraw()
-		}
 	})
 
 	win.Connect("motion-notify-event", func(win *gtk.Window, ev *gdk.Event) {
