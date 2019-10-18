@@ -1,1 +1,3 @@
 # hackday-go-paint
+
+Test
