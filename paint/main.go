@@ -86,11 +86,11 @@ func main() {
 		// x--
 		x = xx
 		y = yy
-		matrix[int(x)][int(y)] = scaler.GetValue()
-		colorMatrix[int(x)][int(y)] = btn.ColorChooser.GetRGBA()
-
-		win.QueueDraw()
-		
+		if y > 50 {
+			matrix[int(x)][int(y)] = scaler.GetValue()
+			colorMatrix[int(x)][int(y)] = btn.ColorChooser.GetRGBA()
+			win.QueueDraw()
+		}
 	})
 
 	gtk.Main()
