@@ -32,6 +32,7 @@ func main() {
 	// Create some widgets to put in the grid.
 	btn, _ := gtk.ColorButtonNew()
 	da, _ := gtk.DrawingAreaNew()
+	da.SetSizeRequest(width,height)
 
 	// Put widgets in grid
 	grid.Add(da)
