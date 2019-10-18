@@ -7,19 +7,20 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 )
 
-const (
-	KEY_LEFT  uint = 65361
-	KEY_UP    uint = 65362
-	KEY_RIGHT uint = 65363
-	KEY_DOWN  uint = 65364
-)
 
 func main() {
 	gtk.Init(nil)
+	const width = 1000
+	const height = 500
 
 	// gui boilerplate
+	var matrix[width][height] bool
 	win, _ := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
+
 	win.SetTitle("Paint")
+	win.SetDefaultSize(width,height)
+	win.SetResizable(false)
+	// On quit
 	win.Connect("destroy", func() {
 		gtk.MainQuit()
 	})
@@ -36,32 +37,32 @@ func main() {
 	grid.Add(da)
 	grid.Add(btn)
 	win.Add(grid)
+
 	win.ShowAll()
+
 
 	// Data !
 	unitSize := 1.0
 	x := 0.0
 	y := 0.0
-	keyMap := map[uint]func(){
-		KEY_LEFT:  func() { x-- },
-		KEY_UP:    func() { y-- },
-		KEY_RIGHT: func() { x++ },
-		KEY_DOWN:  func() { y++ },
-	}
+	
 
 	// Event handlers
 	da.Connect("draw", func(da *gtk.DrawingArea, cr *cairo.Context) {
 		cr.SetSourceRGB(0, 0, 0)
 		cr.Rectangle(x*unitSize, y*unitSize, unitSize, unitSize)
 		cr.Stroke()
-	})
-	win.Connect("key-press-event", func(win *gtk.Window, ev *gdk.Event) {
-		keyEvent := &gdk.EventKey{ev}
-		if move, found := keyMap[keyEvent.KeyVal()]; found {
-			move()
-			fmt.Printf("on key %f %f\n", x, y)
-			win.QueueDraw()
-		}
+		for i := 0; i < width; i++ {
+        	for j := 0; j < height; j++ {
+        		if matrix[i][j]{
+        			cr.Rectangle(float64(i)*unitSize, float64(j)*unitSize, unitSize, unitSize)
+
+        		}
+        	}
+        }
+		cr.Stroke()
+
+
 	})
 
 	win.Connect("motion-notify-event", func(win *gtk.Window, ev *gdk.Event) {
@@ -77,6 +78,7 @@ func main() {
 		// x--
 		x = xx
 		y = yy
+		matrix[int(x)][int(y)] = true
 		win.QueueDraw()
 		
 	})
