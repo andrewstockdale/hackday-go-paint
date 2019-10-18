@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/gotk3/gotk3/cairo"
 	"github.com/gotk3/gotk3/gdk"
 	"github.com/gotk3/gotk3/gtk"
 )
-
 
 func main() {
 	gtk.Init(nil)
@@ -14,11 +14,11 @@ func main() {
 	const height = 500
 
 	// gui boilerplate
-	var matrix[width][height] bool
+	var matrix [width][height]float64
 	win, _ := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
 
 	win.SetTitle("Paint")
-	win.SetDefaultSize(width,height)
+	win.SetDefaultSize(width, height)
 	win.SetResizable(false)
 	// On quit
 	win.Connect("destroy", func() {
@@ -34,8 +34,12 @@ func main() {
 	da, _ := gtk.DrawingAreaNew()
 	da.SetSizeRequest(width,height)
 
+	scaler, _ := gtk.ScaleNewWithRange(gtk.ORIENTATION_HORIZONTAL, 1, 50, 1)
+	scaler.SetSizeRequest(50,50)
+
 	// Put widgets in grid
 	grid.Add(da)
+	grid.Add(scaler)
 	grid.Add(btn)
 	win.Add(grid)
 
@@ -46,7 +50,7 @@ func main() {
 	unitSize := 1.0
 	x := 0.0
 	y := 0.0
-	
+
 
 	// Event handlers
 	da.Connect("draw", func(da *gtk.DrawingArea, cr *cairo.Context) {
@@ -54,20 +58,19 @@ func main() {
 		cr.Rectangle(x*unitSize, y*unitSize, unitSize, unitSize)
 		cr.Stroke()
 		for i := 0; i < width; i++ {
-        	for j := 0; j < height; j++ {
-        		if matrix[i][j]{
-        			cr.Rectangle(float64(i)*unitSize, float64(j)*unitSize, unitSize, unitSize)
-
-        		}
-        	}
-        }
-		cr.Stroke()
-
+			for j := 0; j < height; j++ {
+				if matrix[i][j] > 0 {
+					cr.Rectangle(float64(i)*unitSize, float64(j)*unitSize, unitSize, unitSize)
+					cr.SetLineWidth(matrix[i][j])
+					cr.Stroke()
+				}
+			}
+		}
 
 	})
 
 	win.Connect("motion-notify-event", func(win *gtk.Window, ev *gdk.Event) {
-	// win.Connect("button-press-event", func(win *gtk.Window, ev *gdk.Event) {
+		// win.Connect("button-press-event", func(win *gtk.Window, ev *gdk.Event) {
 		
 		motion := &gdk.EventMotion{ev}
 		xx, yy := motion.MotionVal()
@@ -79,7 +82,7 @@ func main() {
 		// x--
 		x = xx
 		y = yy
-		matrix[int(x)][int(y)] = true
+		matrix[int(x)][int(y)] = scaler.GetValue()
 		win.QueueDraw()
 		
 	})
